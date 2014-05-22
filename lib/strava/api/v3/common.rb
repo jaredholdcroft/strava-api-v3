@@ -19,11 +19,16 @@ module Strava::Api::V3
     # @raise [Stava::Api::V3::APIError] if Strava returns an error
     #
     # @return the result from Strava
-    def api_call(path, args = {}, verb = "get", options = {}, &post_processing)
-      result = api(path, args, verb, options) do |response|
+    def api_call(path, args = {}, verb = 'get', options = {}, &post_processing)
+      pre_call = options[:pre_call]
+      pre_call_result = pre_call.call(path, args, verb) unless pre_call.nil?
+      result = pre_call_result || api(path, args, verb, options) do |response|
         error = check_response(response.code, response.body)
         raise error if error
       end
+
+      post_call = options[:post_call]
+      post_call.call(result, {path: path, args: args, verb: verb}) unless post_call.nil?
 
       # now process as appropriate for the given call (get picture header, etc.)
       post_processing ? post_processing.call(result) : result
@@ -45,7 +50,7 @@ module Strava::Api::V3
     #
     # @raise [Strava::Api::V3::ServerError] if Strava returns an error (response status >= 500)
     #
-    # @return the body of the response from Strava 
+    # @return the body of the response from Strava
     def api(path, args = {}, verb = "get", options = {}, &error_checking_block)
       # If a access token is explicitly provided, use that
       # This is explicitly needed in batch requests so GraphCollection
@@ -129,6 +134,6 @@ module Strava::Api::V3
             ClientError.new(http_status, response_body, error_info)
           end
         end
-      end    
+      end
 end
 end
