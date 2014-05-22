@@ -60,5 +60,19 @@ module Strava::Api::V3
         end
       end
     end
+
+    describe '#sanitize_request_parameters' do
+      it 'converts Time objects to seconds' do
+        time = Time.now
+        sanitized = @target.sanitize_request_parameters from: time
+        sanitized.must_equal from: time.to_i
+      end
+
+      it 'converts DateTime objects to seconds' do
+        now = DateTime.now
+        sanitized = @target.sanitize_request_parameters from: now
+        sanitized.must_equal from: now.to_time.to_i
+      end
+    end
   end
 end

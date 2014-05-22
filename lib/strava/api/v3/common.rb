@@ -97,6 +97,9 @@ module Strava::Api::V3
         if value.is_a?(Array) && value.none? {|entry| entry.is_a?(Enumerable) && !entry.is_a?(String)}
           value = value.join(",")
         end
+        value = value.to_time if value.is_a? DateTime
+        value = value.to_i if value.is_a? Time
+
         result.merge(key => value)
       end
     end
