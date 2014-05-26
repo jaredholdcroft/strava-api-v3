@@ -21,14 +21,15 @@ module Strava::Api::V3
     # @return the result from Strava
     def api_call(path, args = {}, verb = 'get', options = {}, &post_processing)
       pre_call = options[:pre_call]
-      pre_call_result = pre_call.call(path, args, verb) unless pre_call.nil?
+      pre_call_args = {path: path, args: args, verb: verb}
+      pre_call_result = pre_call.call(pre_call_args) unless pre_call.nil?
       result = pre_call_result || api(path, args, verb, options) do |response|
         error = check_response(response.code, response.body)
         raise error if error
       end
 
       post_call = options[:post_call]
-      post_call.call(result, {path: path, args: args, verb: verb}) unless post_call.nil?
+      post_call.call(result, pre_call_args) unless post_call.nil?
 
       # now process as appropriate for the given call (get picture header, etc.)
       post_processing ? post_processing.call(result) : result

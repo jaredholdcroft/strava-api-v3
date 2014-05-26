@@ -24,7 +24,7 @@ module Strava::Api::V3
       describe 'pre_call' do
         it 'returns pre_call result' do
           expected = 'CACHE'
-          pre_call = Proc.new do |path, args, verb|
+          pre_call = Proc.new do |options|
             expected
           end
           actual = @target.api_call(@path, @args, 'get', {pre_call: pre_call})
@@ -32,7 +32,7 @@ module Strava::Api::V3
         end
 
         it 'calls api if no pre_call result' do
-          pre_call = Proc.new do |path, args, verb|
+          pre_call = Proc.new do |options|
           end
           actual = @target.api_call(@path, @args, 'get', {pre_call: pre_call})
           actual.must_equal 'result'
