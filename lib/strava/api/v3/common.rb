@@ -57,7 +57,7 @@ module Strava::Api::V3
       # results preserve any specific access tokens provided
       args["access_token"] ||= self.access_token ||= Strava::Api::V3::Configuration::DEFAULT_ACCESS_TOKEN
 
-      puts args
+      @logger.debug "Args: #{args}"
       # Translate any arrays in the params into comma-separated strings
       args = sanitize_request_parameters(args)
 
