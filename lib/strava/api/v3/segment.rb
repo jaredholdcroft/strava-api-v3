@@ -59,5 +59,20 @@ module Strava::Api::V3
       # Fetches the connections for given object.
       api_call('segments/explore', args, 'get', options, &block)
     end
+
+    # Retrieve an array of segment efforts, for a given segment, filtered by athlete and/or a date range
+    #
+    # See {http://strava.github.io/api/v3/segments} for full details
+    #
+    # @param args any additional arguments
+    # @param options (see #get_object)
+    # @param block post processing code block
+    #
+    # @return segment json (see http://strava.github.io/api/v3/segments)
+    def segment_list_efforts(id, args = {}, options = {}, &block)
+      # Fetches the connections for given object.
+      api_call("segments/#{id}/all_efforts", args, 'get', options, &block)
+    end
+
   end
 end
