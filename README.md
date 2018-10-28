@@ -253,16 +253,28 @@ status = @client.retrieve_upload_status(upload_id)
 
 ### Authentication
 
-Retrieve user token and information (athlete). See [http://strava.github.io/api/v3/oauth](http://strava.github.io/api/v3/oauth) for more info
+Retrieve user token, refresh token and information (athlete). See [https://developers.strava.com/docs/authentication/](https://developers.strava.com/docs/authentication/) for more info
 
 ```ruby
 
 access_information = Strava::Api::V3::Auth.retrieve_access('client_id', 'client_secret', 'code')
 access_token = access_information['access_token']
+refresh_token = access_information['refresh_token']
+expires = access_information['expires']
 athlete_information = access_information['athlete']
 
 ```
 
+Access tokens expire six hours after they are created, so they must be refreshed in order for an application to maintain access to a user’s resources.
+
+```ruby
+
+access_information = Strava::Api::V3::Auth.refresh_access_token('client_id', 'client_secret', refresh_token)
+new_access_token = access_information['access_token']
+new_refresh_token = access_information['refresh_token']
+expires = access_information['expires']
+
+```
 
 ## Contributors
 
